@@ -86,16 +86,16 @@ else
     rvm_ruby='$PR_RED‹$(rbenv version | sed -e "s/ (set.*$//")›$PR_NO_COLOR'
   fi
 fi
-# local git_branch='$(git_prompt_info)$FX[BOLD]$FG[081]'
+local git_branch='$(git_prompt_info)$FX[BOLD]$FG[081]'
 local time='$PR_NO_COLOR%*$FX[BOLD]$FG[081]'
 
 #PROMPT="${user_host} ${current_dir} ${rvm_ruby} ${git_branch}$PR_PROMPT "
-#PROMPT="$FX[bold]$FG[081]╭──(${current_dir})─${git_branch}(${time})─(${user_host})
-#╰$PR_PROMPT"
-PROMPT="$FX[bold]$FG[081]╭──(${current_dir})─(${time})─(${user_host})
+PROMPT="$FX[bold]$FG[081]╭──(${current_dir})─${git_branch}(${time})─(${user_host})
 ╰$PR_PROMPT"
+#PROMPT="$FX[bold]$FG[081]╭──(${current_dir})─(${time})─(${user_host})
+#╰$PR_PROMPT"
 RPS1="${return_code}"
 
-# ZSH_THEME_GIT_PROMPT_PREFIX="($fg_bold[white]"
-# ZSH_THEME_GIT_PROMPT_SUFFIX="$FX[BOLD]$FG[081])─"
-# ZSH_THEME_GIT_PROMPT_DIRTY="$PR_RED⚡$FX[BOLD]$FG[081]"
+ZSH_THEME_GIT_PROMPT_PREFIX="($fg_bold[white]"
+ZSH_THEME_GIT_PROMPT_SUFFIX="$FX[BOLD]$FG[081])─"
+ZSH_THEME_GIT_PROMPT_DIRTY="$PR_RED⚡$FX[BOLD]$FG[081]"
