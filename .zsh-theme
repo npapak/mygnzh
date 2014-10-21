@@ -67,17 +67,11 @@ elif [[ $UID -eq 0 ]]; then # root
   local PR_PROMPT='$PR_RED➤ $PR_NO_COLOR'
 fi
 
-# Check if we are on SSH or not
-if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then
-  eval PR_HOST='$PR_BOLD$PR_MAGENTA%M$PR_NO_COLOR' #SSH
-else
-  eval PR_HOST='$FX[reset]$FG[051]%M$PR_NO_COLOR' # no SSH
-fi
 
 local return_code="%(?..$PR_RED%? ↵$PR_NO_COLOR)"
 
 local user_host='$PR_USER$FX[reset]$FG[050]@$PR_HOST$FX[BOLD]$FG[081]'
-local current_dir='$FX[reset]$FG[245]%~$FX[BOLD]$FG[081]'
+local current_dir='$FX[reset]$FG[245]%1~$FX[BOLD]$FG[081]'
 local rvm_ruby=''
 if which rvm-prompt &> /dev/null; then
   rvm_ruby='$PR_RED‹$(rvm-prompt i v g s)›$PR_NO_COLOR'
@@ -86,18 +80,23 @@ else
     rvm_ruby='$PR_RED‹$(rbenv version | sed -e "s/ (set.*$//")›$PR_NO_COLOR'
   fi
 fi
-local git_branch='$(git_prompt_info)$FX[BOLD]$FG[081]'
+local git_branch='$(git_prompt_info)'
 local time='$PR_NO_COLOR%*$FX[BOLD]$FG[081]'
 
-#PROMPT="${user_host} ${current_dir} ${rvm_ruby} ${git_branch}$PR_PROMPT "
-PROMPT="$FX[bold]$FG[081]╭(${git_branch}${current_dir})─(${time})─(${user_host})
-╰$PR_PROMPT"
-#PROMPT="$FX[bold]$FG[081]╭(${current_dir})─(${time})─(${user_host})
-#╰$PR_PROMPT"
-RPROMPT="${return_code}"
+# Check if we are on SSH or not
+if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then
+	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]$FG[087]⏤$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
+$FG[087]╰▸$FX[reset] "
+else
+	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
+$FG[087]╰▸$FX[reset] "
+fi
+PS2="$FG[087]╰▸$FX[reset] "
+#RPROMPT=$'\e[A'"${git_branch}"
+RPROMPT="${git_branch}"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="$FX[reset]"
-ZSH_THEME_GIT_PROMPT_SUFFIX="⛕ $FX[BOLD]$FG[081]"
+ZSH_THEME_GIT_PROMPT_PREFIX="$FX[reset]$FG[226]("
+ZSH_THEME_GIT_PROMPT_SUFFIX="$FG[226])$FX[reset]"
 ZSH_THEME_GIT_PROMPT_DIRTY="$FX[BOLD]$PR_RED"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="$FX[BOLD]$PR_GREEN"
 ZSH_THEME_GIT_PROMPT_CLEAN="$FX[BOLD]$FG[081]"
