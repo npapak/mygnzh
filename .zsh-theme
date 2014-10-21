@@ -84,10 +84,21 @@ local git_branch='$(git_prompt_info)'
 local time='$PR_NO_COLOR%*$FX[BOLD]$FG[081]'
 
 # Check if we are on SSH or not
-if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then
-	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]$FG[087]⏤$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
+if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
+if [ -e "$HOSTNAME" "whale" ]; then
+	if which tmux 2>&1 >/dev/null; then
+		#if not inside a tmux session, and if no session is started, start a new
+		test -z "$TMUX" && (tmux attach || tmux new-session)
+	fi
+fi
+	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]⏤$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
 $FG[087]╰▸$FX[reset] "
 else
+if [ -e "$HOSTNAME" "whale" ]; then
+	#If not running interactively, do not do anything
+	[[ $- != *i* ]] && return
+	[[ -z "$TMUX" ]] && exec tmux
+fi
 	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
 $FG[087]╰▸$FX[reset] "
 fi
