@@ -92,7 +92,7 @@ if [[  $HOSTNAME == $sshhost ]]; then
 		test -z "$TMUX" && (tmux attach || tmux new-session)
 	fi
 fi
-	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]⏤$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
+	PROMPT="$FG[087]╭──$FX[bold](%/)$FX[reset]─$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]─$FX[bold]$FG[046](%n@%m)$FX[reset]
 $FG[087]╰▸$FX[reset] "
 else
 if [[  $HOSTNAME == $sshhost ]]; then
@@ -100,15 +100,15 @@ if [[  $HOSTNAME == $sshhost ]]; then
 	[[ $- != *i* ]] && return
 	[[ -z "$TMUX" ]] && exec tmux
 fi
-	PROMPT="$FG[087]╭⏤⏤$FX[bold](%/)$FX[reset]$FG[087]⏤$FX[bold]$FG[046](%n@%m)$FX[reset]
+	PROMPT="$FG[087]╭──$FX[bold](%/)$FX[reset]$FG[087]─$FX[bold]$FG[046](%n@%m)$FX[reset]
 $FG[087]╰▸$FX[reset] "
 fi
 PS2="$FG[087]╰▸$FX[reset] "
 #RPROMPT=$'\e[A'"${git_branch}"
 RPROMPT="${git_branch}"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="$FX[reset]$FG[226]("
-ZSH_THEME_GIT_PROMPT_SUFFIX="$FG[226])$FX[reset]"
+ZSH_THEME_GIT_PROMPT_PREFIX="$FX[BOLD]$FG[226]⭠ "
+ZSH_THEME_GIT_PROMPT_SUFFIX="$FG[226]$FX[reset]"
 ZSH_THEME_GIT_PROMPT_DIRTY="$FX[BOLD]$PR_RED"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="$FX[BOLD]$PR_GREEN"
 ZSH_THEME_GIT_PROMPT_CLEAN="$FX[BOLD]$FG[081]"
