@@ -93,7 +93,7 @@ if [[  $HOSTNAME == $sshhost ]]; then
 	fi
 fi
 	PROMPT="$FG[087]╭──$FX[bold](%/)$FX[reset]─$FX[bold]$FG[196](SSH)$FX[reset]$FG[087]─$FX[bold]$FG[046](%n@%m)$FX[reset]
-$FG[087]╰─▶$FX[reset] "
+$FG[087]╰─►$FX[reset] "
 else
 if [[  $HOSTNAME == $sshhost ]]; then
 	#If not running interactively, do not do anything
@@ -101,9 +101,9 @@ if [[  $HOSTNAME == $sshhost ]]; then
 	[[ -z "$TMUX" ]] && exec tmux
 fi
 	PROMPT="$FG[087]╭──$FX[bold](%/)$FX[reset]$FG[087]─$FX[bold]$FG[046](%n@%m)$FX[reset]
-$FG[087]╰─▶$FX[reset] "
+$FG[087]╰─►$FX[reset] "
 fi
-PS2="$FG[087]╰─▶$FX[reset] "
+PS2="$FG[087]╰─►$FX[reset] "
 #RPROMPT=$'\e[A'"${git_branch}"
 RPROMPT="${git_branch}"
 
