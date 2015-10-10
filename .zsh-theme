@@ -203,13 +203,13 @@ else
 		[[ $- != *i* ]] && return
 		[[ -z "$TMUX" ]] && exec tmux
 	fi
-	PROMPT='%{%f%b%k%}$(build_prompt) '
+	PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 fi
 PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$FX[reset] '
-RPROMPT='$(git_prompt_info)$FX[reset]'
+RPROMPT='$(git_prompt_info)'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$FX[BOLD]$FG[$YELLOW]$BG[$YELLOW]$FX[BOLD]$FG[$GRAY]  "
-ZSH_THEME_GIT_PROMPT_SUFFIX="  $FG[$GRAY]$FX[reset]"
+ZSH_THEME_GIT_PROMPT_SUFFIX="  $FX[reset]"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="$FX[BOLD]$FG[$GRAY]$FX[BOLD]●"
 ZSH_THEME_GIT_PROMPT_CLEAN="$FX[BOLD]$FG[$GREEN] ✔"
 ZSH_THEME_GIT_PROMPT_DIRTY="$FX[BOLD]$FG[$RED] ✗"
