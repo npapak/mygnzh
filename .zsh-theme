@@ -70,10 +70,10 @@ prompt_end() {
 # Context: user@hostname (who am I and where am I)
 prompt_context() {
   local user=`whoami`
-  local context=''
+  local context='%n@%m'
 
-  [[ "$user" != "$DEFAULT_USER" ]] && context="$user"
-  [[ "$HOST" != "$DEFAULT_HOST" ]] && context="${context}@$HOST"
+  #[[ "$user" != "$DEFAULT_USER" ]] && context="$user"
+  #[[ "$HOST" != "$DEFAULT_HOST" ]] && context="${context}@$HOST"
   [[ -n "$context" ]] && prompt_segment $GRAY $WHITE "$context"
 }
 
