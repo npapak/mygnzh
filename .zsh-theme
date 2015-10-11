@@ -77,31 +77,104 @@ prompt_context() {
   [[ -n "$context" ]] && prompt_segment $GRAY $WHITE "$context"
 }
 
+__GIT_PROMPT_DIR="${0:A:h}"
+
+## Hook function definitions
+function chpwd_update_git_vars() {
+    update_current_git_vars
+}
+
+function preexec_update_git_vars() {
+    case "$2" in
+        git*|hub*|gh*|stg*)
+        __EXECUTED_GIT_COMMAND=1
+        ;;
+    esac
+}
+
+function precmd_update_git_vars() {
+    if [ -n "$__EXECUTED_GIT_COMMAND" ] || [ ! -n "$ZSH_THEME_GIT_PROMPT_CACHE" ]; then
+        update_current_git_vars
+        unset __EXECUTED_GIT_COMMAND
+    fi
+}
+
+chpwd_functions+=(chpwd_update_git_vars)
+precmd_functions+=(precmd_update_git_vars)
+preexec_functions+=(preexec_update_git_vars)
+
+
+## Function definitions
+function update_current_git_vars() {
+    unset __CURRENT_GIT_STATUS
+
+    local gitstatus="$__GIT_PROMPT_DIR/gitstatus.py"
+    _GIT_STATUS=$(python ${gitstatus} 2>/dev/null)
+     __CURRENT_GIT_STATUS=("${(@s: :)_GIT_STATUS}")
+    GIT_BRANCH=$__CURRENT_GIT_STATUS[1]
+    GIT_AHEAD=$__CURRENT_GIT_STATUS[2]
+    GIT_BEHIND=$__CURRENT_GIT_STATUS[3]
+    GIT_STAGED=$__CURRENT_GIT_STATUS[4]
+    GIT_CONFLICTS=$__CURRENT_GIT_STATUS[5]
+    GIT_CHANGED=$__CURRENT_GIT_STATUS[6]
+    GIT_UNTRACKED=$__CURRENT_GIT_STATUS[7]
+}
+
+git_super_status() {
+    precmd_update_git_vars
+    if [ -n "$__CURRENT_GIT_STATUS" ]; then
+      STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
+      if [ "$GIT_BEHIND" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
+      fi
+      if [ "$GIT_AHEAD" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$GIT_AHEAD%{${reset_color}%}"
+      fi
+      STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
+      if [ "$GIT_STAGED" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$GIT_STAGED%{${reset_color}%}"
+      fi
+      if [ "$GIT_CONFLICTS" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$GIT_CONFLICTS%{${reset_color}%}"
+      fi
+      if [ "$GIT_CHANGED" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$GIT_CHANGED%{${reset_color}%}"
+      fi
+      if [ "$GIT_UNTRACKED" -ne "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED%{${reset_color}%}"
+      fi
+      if [ "$GIT_CHANGED" -eq "0" ] && [ "$GIT_CONFLICTS" -eq "0" ] && [ "$GIT_STAGED" -eq "0" ] && [ "$GIT_UNTRACKED" -eq "0" ]; then
+          STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
+      fi
+      STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+      echo "$STATUS"
+    fi
+}
 # Git: branch/detached head, dirty status
 prompt_git() {
-  local ref dirty
-  if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-    dirty=$(parse_git_dirty)
-    ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git show-ref --head -s --abbrev |head -n1 2> /dev/null)"
-    if [[ -n $dirty ]]; then
-      prompt_segment $YELLOW $GRAY
-    else
-      prompt_segment $GREEN $GRAY
-    fi
+  #local ref dirty
+  #if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+    #dirty=$(parse_git_dirty)
+    #ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git show-ref --head -s --abbrev |head -n1 2> /dev/null)"
+    #if [[ -n $dirty ]]; then
+      #prompt_segment $YELLOW $GRAY
+    #else
+      #prompt_segment $GREEN $GRAY
+    #fi
 
-    setopt promptsubst
-    autoload -Uz vcs_info
+    #setopt promptsubst
+    #autoload -Uz vcs_info
 
-    zstyle ':vcs_info:*' enable git
-    zstyle ':vcs_info:*' get-revision true
-    zstyle ':vcs_info:*' check-for-changes true
-    zstyle ':vcs_info:*' stagedstr '✚'
-    zstyle ':vcs_info:git:*' unstagedstr '●'
-    zstyle ':vcs_info:*' formats ' %u%c'
-    zstyle ':vcs_info:*' actionformats '%u%c'
-    vcs_info
-    echo -n "${ref/refs\/heads\// }${vcs_info_msg_0_}"
-  fi
+    #zstyle ':vcs_info:*' enable git
+    #zstyle ':vcs_info:*' get-revision true
+    #zstyle ':vcs_info:*' check-for-changes true
+    #zstyle ':vcs_info:*' stagedstr '✚'
+    #zstyle ':vcs_info:git:*' unstagedstr '●'
+    #zstyle ':vcs_info:*' formats ' %u%c'
+    #zstyle ':vcs_info:*' actionformats '%u%c'
+    #vcs_info
+    #echo -n "${ref/refs\/heads\// }${vcs_info_msg_0_}"
+  #fi
 }
 
 prompt_hg() {
@@ -206,11 +279,17 @@ else
 	PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 fi
 PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$FX[reset] '
-RPROMPT='$(git_prompt_info)'
+RPROMPT='$(git_super_status)'
 
+# Default values for the appearance of the prompt.
 ZSH_THEME_GIT_PROMPT_PREFIX="$FX[BOLD]$FG[$YELLOW]$BG[$YELLOW]$FX[BOLD]$FG[$GRAY]  "
-ZSH_THEME_GIT_PROMPT_SUFFIX="  $FX[reset]"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="$FX[BOLD]$FG[$GRAY]$FX[BOLD]●"
-ZSH_THEME_GIT_PROMPT_CLEAN="$FX[BOLD]$FG[$GREEN] ✔"
-ZSH_THEME_GIT_PROMPT_DIRTY="$FX[BOLD]$FG[$RED] ✗"
-ZSH_THEME_GIT_PROMPT_MIDDLE="%{$FG[101]%} "
+ZSH_THEME_GIT_PROMPT_SUFFIX="$BG[$YELLOW]  $FX[reset]"
+ZSH_THEME_GIT_PROMPT_SEPARATOR="$BG[$YELLOW]$FX[BOLD]$FG[$GRAY]| "
+ZSH_THEME_GIT_PROMPT_BRANCH="$FX[BOLD]$FG[$GRAY]"
+ZSH_THEME_GIT_PROMPT_STAGED="$BG[$YELLOW]$FG[RED] ●%G"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="$BG[$YELLOW]$FG[RED] ✖%G"
+ZSH_THEME_GIT_PROMPT_CHANGED="$BG[$YELLOW]$FX[BOLD]$FG[$RED] ✘"
+ZSH_THEME_GIT_PROMPT_BEHIND="$BG[$YELLOW]$FX[BOLD]$FG[$GRAY] ↓%G"
+ZSH_THEME_GIT_PROMPT_AHEAD="$BG[$YELLOW]$FX[BOLD]$FG[$GRAY] ↑%G"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="$BG[$YELLOW]$FX[BOLD]$FG[$GRAY] …%G"
+ZSH_THEME_GIT_PROMPT_CLEAN="$BG[$YELLOW]$FX[BOLD]$FG[$GREEN] ✔"
