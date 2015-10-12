@@ -28,6 +28,7 @@ GREEN='113'
 RED='173'
 LGREEN='192'
 YELLOW='228'
+ORANGE='208'
 GRAY='236'
 WHITE='252'
 
@@ -230,7 +231,6 @@ build_prompt() {
   prompt_virtualenv
   prompt_context
   prompt_dir
-  prompt_hg
   prompt_status
   prompt_end
 }
@@ -254,7 +254,7 @@ else
 	PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 fi
 PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$SEGMENT_SEPARATOR$FX[reset] '
-RPROMPT='$(git_super_status)'
+RPROMPT='$(prompt_hg)$(git_super_status)'
 
 # Default values for the appearance of the prompt.
 ZSH_THEME_GIT_PROMPT_PREFIX="$FX[BOLD]$FG[$YELLOW]$BG[$YELLOW]$FX[BOLD]$FG[$GRAY] "
@@ -263,7 +263,7 @@ ZSH_THEME_GIT_PROMPT_BEHIND="$FX[BOLD]$FG[$GRAY]↓"
 ZSH_THEME_GIT_PROMPT_AHEAD="$FX[BOLD]$FG[$GRAY]↑"
 ZSH_THEME_GIT_PROMPT_SEPARATOR="$FX[BOLD]$FG[$GRAY]|"
 ZSH_THEME_GIT_PROMPT_CLEAN="$FX[BOLD]$FG[$GREEN]✔"
-ZSH_THEME_GIT_PROMPT_CHANGED="$FX[BOLD]$FG[$RED]✘"
+ZSH_THEME_GIT_PROMPT_CHANGED="$FX[BOLD]$FG[$ORANGE]⚡"
 ZSH_THEME_GIT_PROMPT_STAGED="$FG[RED]●"
 ZSH_THEME_GIT_PROMPT_CONFLICTS="$FG[RED]✖"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="$FX[BOLD]$FG[$GRAY]…"
