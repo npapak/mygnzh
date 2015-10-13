@@ -254,7 +254,7 @@ else
 	PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 fi
 PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$SEGMENT_SEPARATOR$FX[reset] '
-ZLE_RPROMPT_INDENT=0
+#ZLE_RPROMPT_INDENT=0  # Remove space after RPROMPT; BUG
 RPROMPT='$(prompt_hg)$(git_super_status)'
 
 # Default values for the appearance of the prompt.
