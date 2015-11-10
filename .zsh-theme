@@ -235,27 +235,40 @@ build_prompt() {
   prompt_end
 }
 
-sshhost='whale'
-# Check if we are on SSH or not
-if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
-	if [[  $HOSTNAME == $sshhost ]]; then
-		if which tmux 2>&1 >/dev/null; then
-			#if not inside a tmux session, and if no session is started, start a new
-			test -z "$TMUX" && (tmux attach || tmux new-session)
+case "$TERM" in
+	"dumb")
+		PROMPT="> "
+		RPROMPT=""
+		;;
+	xterm*|rxvt*|eterm*|screen*)
+		~/Dropbox/scripts/stats
+		sshhost='whale'
+		# Check if we are on SSH or not
+		if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
+			if [[  $HOSTNAME == $sshhost ]]; then
+				if which tmux 2>&1 >/dev/null; then
+					#if not inside a tmux session, and if no session is started, start a new
+					test -z "$TMUX" && (tmux attach || tmux new-session)
+				fi
+			fi
+			PROMPT='$BG[$GRAY]$FG[$RED]SSH:%{%f%b%k%}$(build_prompt) '
+		else
+			if [[  $HOSTNAME == $sshhost ]]; then
+				#If not running interactively, do not do anything
+				[[ $- != *i* ]] && return
+				[[ -z "$TMUX" ]] && exec tmux
+			fi
+			PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 		fi
-	fi
-	PROMPT='$BG[$GRAY]$FG[$RED]SSH:%{%f%b%k%}$(build_prompt) '
-else
-	if [[  $HOSTNAME == $sshhost ]]; then
-		#If not running interactively, do not do anything
-		[[ $- != *i* ]] && return
-		[[ -z "$TMUX" ]] && exec tmux
-	fi
-	PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
-fi
-PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$SEGMENT_SEPARATOR$FX[reset] '
-#ZLE_RPROMPT_INDENT=0  # Remove space after RPROMPT; BUG
-RPROMPT='$(prompt_hg)$(git_super_status)'
+		PS2='$BG[$GRAY]  $FX[reset]$FG[$GRAY]$SEGMENT_SEPARATOR$FX[reset] '
+		#ZLE_RPROMPT_INDENT=0  # Remove space after RPROMPT; BUG
+		RPROMPT='$(prompt_hg)$(git_super_status)'
+		# PS1="my fancy multi-line prompt > "
+		;;
+	*)
+		PROMPT="> "
+		RPROMPT=""
+esac
 
 # Default values for the appearance of the prompt.
 ZSH_THEME_GIT_PROMPT_PREFIX="$FX[BOLD]$FG[$YELLOW]$BG[$YELLOW]$FX[BOLD]$FG[$GRAY] "
