@@ -237,8 +237,8 @@ build_prompt() {
 
 case "$TERM" in
 	"dumb")
-		PROMPT="> "
-		RPROMPT=""
+		PROMPT="[%n@%m] # "
+		RPROMPT="$PWD"
 		;;
 	xterm*|rxvt*|eterm*|screen*)
 		~/Dropbox/scripts/stats
@@ -266,8 +266,8 @@ case "$TERM" in
 		# PS1="my fancy multi-line prompt > "
 		;;
 	*)
-		PROMPT="> "
-		RPROMPT=""
+		PROMPT="[%n@%m] # "
+		RPROMPT="$PWD"
 esac
 
 # Default values for the appearance of the prompt.
