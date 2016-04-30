@@ -193,7 +193,7 @@ prompt_dir() {
   DIR=$(pwd | sed -e "s,^$HOME,~,")
   while [[ $(grep -o "/" <<<"$DIR" | wc -l) -gt 2 ]] ; do
     if [[ "$DIR" == /* ]] ; then
-      echo "DEBUG: starting with /">&2
+      #echo "DEBUG: starting with /">&2
       [[ $(grep -o "/" <<<"$DIR" | wc -l) -eq 3 ]] && break;
       # remove leading slash
       DIR=${DIR#*/}
