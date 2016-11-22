@@ -245,12 +245,12 @@ case "$TERM" in
 		sshhost='whale'
 		# Check if we are on SSH or not
 		if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
-			if [[  $HOSTNAME == $sshhost ]]; then
-				if which tmux 2>&1 >/dev/null; then
-					#if not inside a tmux session, and if no session is started, start a new
-					test -z "$TMUX" && (tmux attach || tmux new-session)
-				fi
-			fi
+			#if [[  $HOSTNAME == $sshhost ]]; then
+				#if which tmux 2>&1 >/dev/null; then
+					##if not inside a tmux session, and if no session is started, start a new
+					#test -z "$TMUX" && (tmux attach || tmux new-session)
+				#fi
+			#fi
 			PROMPT='$BG[$GRAY]$FG[$RED]SSH:%{%f%b%k%}$(build_prompt) '
 		else
 			if [[  $HOSTNAME == $sshhost ]]; then
