@@ -241,7 +241,11 @@ case "$TERM" in
 		RPROMPT="%~"
 		;;
 	xterm*|rxvt*|eterm*|screen*)
-		~/Dropbox/scripts/stats
+		# ~/Dropbox/scripts/stats
+		clear
+		#neofetch
+		#screenfetch
+		archey
 		sshhost='whale'
 		# Check if we are on SSH or not
 		if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
