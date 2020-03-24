@@ -242,14 +242,8 @@ case "$TERM" in
 		RPROMPT="%~"
 		;;
 	xterm*|rxvt*|eterm*|screen*)
-		clear
-		#if [ ! -f /usr/local/bin/archey ]; then
-			#archey
-		#else
-		 #./stats
-		#fi
-		archey
-		sshhost='whale'
+		#clear
+		#sshhost='whale'
 		# Check if we are on SSH or not
 		if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
 			#if [[  $HOSTNAME == $sshhost ]]; then
@@ -260,10 +254,15 @@ case "$TERM" in
 			#fi
 			PROMPT='$BG[$GRAY]$FG[$RED]SSH:%{%f%b%k%}$(build_prompt) '
 		else
-			if [[  $HOSTNAME == $sshhost ]]; then
-				#If not running interactively, do not do anything
-				[[ $- != *i* ]] && return
-				[[ -z "$TMUX" ]] && exec tmux
+			#if [[  $HOSTNAME == $sshhost ]]; then
+				##If not running interactively, do not do anything
+				#[[ $- != *i* ]] && return
+				#[[ -z "$TMUX" ]] && exec tmux
+			#fi
+			if [ ! -f /usr/local/bin/archey ]; then
+				$HOME/.antigen/bundles/npapak/mygnzh/stats
+			else
+				archey
 			fi
 			PROMPT='$BG[$GRAY]%{%f%b%k%}$(build_prompt) '
 		fi
