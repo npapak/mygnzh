@@ -243,11 +243,12 @@ case "$TERM" in
 		;;
 	xterm*|rxvt*|eterm*|screen*)
 		clear
-		if [ ! -f /usr/local/bin/archey ]; then
-			archey
-		else
-		 ./stats
-		fi
+		#if [ ! -f /usr/local/bin/archey ]; then
+			#archey
+		#else
+		 #./stats
+		#fi
+		archey
 		sshhost='whale'
 		# Check if we are on SSH or not
 		if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT"  || -n "$SSY_TTY" ]]; then
